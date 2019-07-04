@@ -1,0 +1,35 @@
+--- html.go	2019-07-02 16:31:56.000000000 +0300
++++ html_new.go	2019-07-02 16:36:15.000000000 +0300
+@@ -508,7 +508,12 @@
+ 
+ 	out.WriteString("<img src=\"")
+ 	options.maybeWriteAbsolutePrefix(out, link)
+-	attrEscape(out, link)
++
++	test := string(link)
++	test = strings.Replace(test, "./images", "../images", 1)
++	attrEscape(out, []byte(test))
++
++
+ 	out.WriteString("\" alt=\"")
+ 	if len(alt) > 0 {
+ 		attrEscape(out, alt)
+@@ -547,7 +552,17 @@
+ 
+ 	out.WriteString("<a href=\"")
+ 	options.maybeWriteAbsolutePrefix(out, link)
+-	attrEscape(out, link)
++
++	test := string(link)
++	idx := strings.Index(test, "./")
++	if idx == 0 {
++		test = strings.Replace(test, "./", "../", 1)
++	} else {
++		test = strings.Replace(test, "../", "../../", 1)
++	}
++	test = strings.Replace(test, ".md", "/", 1)
++	attrEscape(out, []byte(test))
++
+ 	if len(title) > 0 {
+ 		out.WriteString("\" title=\"")
+ 		attrEscape(out, title)
